@@ -14,6 +14,12 @@ struct ContentView: View {
                 .font(.largeTitle)
                 .fontWeight(.bold)
             
+            
+            ActiveSessionView(
+                           mode: .work,
+                           elapsedSeconds: 3665
+                       )
+            
             HStack(spacing: 16){
                 LazyVGrid(columns: [GridItem(.flexible()),
                                     GridItem(.flexible())
