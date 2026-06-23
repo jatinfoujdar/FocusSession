@@ -9,11 +9,38 @@ import SwiftUI
 
 struct ContentView: View {
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        VStack(spacing: 20) {
+            Text("Focus Sessions")
+                .font(.largeTitle)
+                .fontWeight(.bold)
+            
+            HStack(spacing: 16){
+                FocusModeCardView(
+                    title: "Work", subtitle: "Stay productive", symbol: "briefcase.fill", color: .blue
+                )
+                
+                FocusModeCardView(
+                    title: "Play",
+                    subtitle: "Have fun",
+                    symbol: "gamecontroller.fill",
+                    color: .green
+                )
+            }
+                HStack(spacing: 16) {
+                    FocusModeCardView(
+                        title: "Rest",
+                        subtitle: "Recharge",
+                        symbol: "leaf.fill",
+                        color: .orange
+                    )
+                    
+                    FocusModeCardView(
+                        title: "Sleep",
+                        subtitle: "Sweet dreams",
+                        symbol: "moon.fill",
+                        color: .purple
+                    )
+                }
         }
         .padding()
     }
