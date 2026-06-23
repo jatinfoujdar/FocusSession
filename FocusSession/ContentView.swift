@@ -15,34 +15,16 @@ struct ContentView: View {
                 .fontWeight(.bold)
             
             HStack(spacing: 16){
-                FocusModeCardView(
-                    title: "Work", subtitle: "Stay productive", symbol: "briefcase.fill", color: .blue
-                )
-                
-                FocusModeCardView(
-                    title: "Play",
-                    subtitle: "Have fun",
-                    symbol: "gamecontroller.fill",
-                    color: .green
-                )
-            }
-                HStack(spacing: 16) {
-                    FocusModeCardView(
-                        title: "Rest",
-                        subtitle: "Recharge",
-                        symbol: "leaf.fill",
-                        color: .orange
-                    )
-                    
-                    FocusModeCardView(
-                        title: "Sleep",
-                        subtitle: "Sweet dreams",
-                        symbol: "moon.fill",
-                        color: .purple
-                    )
+                LazyVGrid(columns: [GridItem(.flexible()),
+                                    GridItem(.flexible())
+                                   ], spacing: 16){
+                    ForEach(FocusMode.allCases){mode in
+                        FocusModeCardView(mode: mode)
+                    }
                 }
+            }
+            .padding()
         }
-        .padding()
     }
 }
 

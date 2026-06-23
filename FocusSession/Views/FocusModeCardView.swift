@@ -8,30 +8,25 @@
 import SwiftUI
 
 struct FocusModeCardView: View {
-    let title: String
-    let subtitle: String
-    let symbol: String
-    let color: Color
+    let mode : FocusMode
     var body: some View {
         VStack(spacing: 8){
-            Image(systemName: symbol)
+            Image(systemName: mode.symbol)
                 .font(.largeTitle)
-                .foregroundStyle(color)
+                .foregroundStyle(mode.color)
             
-            Text(title)
+            Text(mode.rawValue)
                 .font(.headline)
             
-            Text(subtitle)
+            Text(mode.subtitle)
                 .font(.caption)
                 .foregroundStyle(.secondary)
         }
         .frame(maxWidth: .infinity)
         .padding()
-        .background(color.opacity(0.1))
+        .background(mode.color.opacity(0.1))
         .cornerRadius(16)
     }
 }
 
-#Preview {
-    FocusModeCardView(title: "WorkMode", subtitle: "Stay productive", symbol: "briefcase.fill", color: .blue)
-}
+
