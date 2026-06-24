@@ -7,8 +7,10 @@
 
 import SwiftUI
 
+
 struct FocusSession: Identifiable {
     let id = UUID()
     let mode: FocusMode
     let startTime: Date
 }
+

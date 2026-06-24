@@ -8,8 +8,13 @@
 import SwiftUI
 
 struct ActiveSessionView: View {
-    let mode: FocusMode
-    let elapsedSeconds: Int
+    
+    @State private var currentTime = Date()
+    let session: FocusSession
+       
+       var elapsedSeconds: Int {
+           Int(Date().timeIntervalSince(session.startTime))
+       }
     
     var formattedTime: String{
         let hours = elapsedSeconds / 3600
@@ -32,11 +37,11 @@ struct ActiveSessionView: View {
         var body: some View {
             VStack(spacing: 12){
                 HStack{
-                    Image(systemName: mode.symbol)
+                    Image(systemName: session.mode.symbol)
                     Text("Currently Focusing")
                     Spacer()
                 }
-                .foregroundStyle(mode.color)
+                .foregroundStyle(session.mode.color)
                 .font(.subheadline)
                 
                 Text(formattedTime)
@@ -50,8 +55,8 @@ struct ActiveSessionView: View {
             .padding()
             .background(
                 RoundedRectangle(cornerRadius: 20)
-                    .fill(mode.color.opacity(0.1))
-                    .stroke(mode.color.opacity(0.3), lineWidth: 2)
+                    .fill(session.mode.color.opacity(0.1))
+                    .stroke(session.mode.color.opacity(0.3), lineWidth: 2)
             )
         }
     }
