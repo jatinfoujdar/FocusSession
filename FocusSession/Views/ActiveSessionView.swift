@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+internal import Combine
 
 struct ActiveSessionView: View {
     
@@ -58,6 +59,9 @@ struct ActiveSessionView: View {
                     .fill(session.mode.color.opacity(0.1))
                     .stroke(session.mode.color.opacity(0.3), lineWidth: 2)
             )
+            .onReceive(Timer.publish(every: 1, on: .main, in: .common).autoconnect()) { _ in
+                currentTime = Date()
+            }
         }
     }
     
