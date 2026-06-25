@@ -49,6 +49,7 @@ struct ContentView: View {
                 }
             }
             .padding()
+            .navigationBarHidden(true)
         }
     }
     func startSession(mode: FocusMode){
