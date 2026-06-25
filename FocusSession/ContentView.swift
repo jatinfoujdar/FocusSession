@@ -11,34 +11,45 @@ struct ContentView: View {
     @State private var activeSession: FocusSession? = nil
     
     var body: some View {
-        VStack(spacing: 20) {
-            Text("Focus Sessions")
-                .font(.largeTitle)
-                .fontWeight(.bold)
-            
-            if let session = activeSession {
-                ActiveSessionView(session : session)
-                
-                Button(action: stopSession){
-                    Label("Stop Focusing", systemImage: "stop.circle.fill")
-                        .font(.title2)
+        NavigationStack{
+            VStack(spacing: 20) {
+                HStack{
+                    Text("Focus Sessions")
+                        .font(.largeTitle)
+                        .fontWeight(.bold)
+                    
+                    Spacer()
+                    
+                    NavigationLink {
+                        ProfileView()
+                    } label: {
+                        Image(systemName: "person.circle")
+                            .font(.title2)
+                    }
                 }
-                 .buttonStyle(.borderedProminent)
-                 .tint(.red)
-            }else{
-                HStack(spacing: 16){
+                
+                if let session = activeSession {
+                    ActiveSessionView(session : session)
+                    
+                    Button(action: stopSession){
+                        Label("Stop Focusing", systemImage: "stop.circle.fill")
+                            .font(.title2)
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .tint(.red)
+                }else{
                     LazyVGrid(columns: [GridItem(.flexible()),
                                         GridItem(.flexible())
                                        ], spacing: 16){
-                        ForEach(FocusMode.allCases){mode in
+                        ForEach(FocusMode.allCases, id: \.self) { mode in
                             FocusModeCardView(mode: mode)
                         }
-                        .buttonStyle(.plain)
                     }
+                    .buttonStyle(.plain)
                 }
             }
+            .padding()
         }
-        .padding()
     }
     func startSession(mode: FocusMode){
         activeSession = FocusSession(mode: mode, startTime: Date())
