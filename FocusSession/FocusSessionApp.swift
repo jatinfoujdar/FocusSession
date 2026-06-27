@@ -14,5 +14,6 @@ struct FocusSessionApp: App {
         WindowGroup {
             ContentView()
         }
+        .modelContainer(for: [FocusSessionModal.self, BadgeModel.self, UserProfile.self])
     }
 }
