@@ -12,7 +12,7 @@ struct ProfileView: View {
     var body: some View {
         NavigationStack{
             List{
-                Section("Profile"){
+                Section(){
                     HStack{
                         Spacer()
                         VStack{

@@ -11,15 +11,17 @@ struct ContentView: View {
     @State private var activeSession: FocusSession? = nil
     
     var body: some View {
-        NavigationStack{
-            VStack(spacing: 20) {
-                HStack{
+        NavigationStack {
+            VStack {
+
+                // Header (always visible)
+                HStack {
                     Text("Focus Sessions")
                         .font(.largeTitle)
                         .fontWeight(.bold)
-                    
+
                     Spacer()
-                    
+
                     NavigationLink {
                         ProfileView()
                     } label: {
@@ -27,29 +29,49 @@ struct ContentView: View {
                             .font(.title2)
                     }
                 }
-                
-                if let session = activeSession {
-                    ActiveSessionView(session : session)
-                    
-                    Button(action: stopSession){
-                        Label("Stop Focusing", systemImage: "stop.circle.fill")
-                            .font(.title2)
-                    }
-                    .buttonStyle(.borderedProminent)
-                    .tint(.red)
-                }else{
-                    LazyVGrid(columns: [GridItem(.flexible()),
-                                        GridItem(.flexible())
-                                       ], spacing: 16){
-                        ForEach(FocusMode.allCases, id: \.self) { mode in
-                            FocusModeCardView(mode: mode)
+                .padding(.horizontal)
+                .padding(.vertical)
+
+                Spacer()
+
+                // Content
+                Group {
+                    if let session = activeSession {
+
+                        ActiveSessionView(session: session)
+
+                        Button(action: stopSession) {
+                            Label("Stop Focusing", systemImage: "stop.circle.fill")
                         }
+                        .buttonStyle(.borderedProminent)
+                        .tint(.red)
+
+                    } else {
+
+                        LazyVGrid(
+                            columns: [
+                                GridItem(.flexible()),
+                                GridItem(.flexible())
+                            ],
+                            spacing: 16
+                        ) {
+                            ForEach(FocusMode.allCases, id: \.self) { mode in
+                                Button {
+                                    startSession(mode: mode)
+                                } label: {
+                                    FocusModeCardView(mode: mode)
+                                }
+                                .buttonStyle(.plain)
+                            }
+                        }
+                        .padding()
                     }
-                    .buttonStyle(.plain)
                 }
+Spacer()
+        
             }
-            .padding()
             .navigationBarHidden(true)
+        
         }
     }
     func startSession(mode: FocusMode){
