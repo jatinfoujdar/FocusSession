@@ -5,80 +5,69 @@
 //  Created by jatin foujdar on 23/06/26.
 //
 
+// ContentView.swift
 import SwiftUI
+import SwiftData
 
 struct ContentView: View {
-    @State private var activeSession: FocusSession? = nil
+    @Environment(\.modelContext) private var modelContext
+    
+    // Create the session manager as state
+    @State private var sessionManager: SessionManager?
     
     var body: some View {
         NavigationStack {
-            VStack {
-
-                // Header (always visible)
-                HStack {
-                    Text("Focus Sessions")
-                        .font(.largeTitle)
-                        .fontWeight(.bold)
-
-                    Spacer()
-
-                    NavigationLink {
-                        ProfileView()
-                    } label: {
-                        Image(systemName: "person.circle")
-                            .font(.title2)
-                    }
-                }
-                .padding(.horizontal)
-                .padding(.vertical)
-
-                Spacer()
-
-                // Content
-                Group {
-                    if let session = activeSession {
-
-                        ActiveSessionView(session: session)
-
-                        Button(action: stopSession) {
-                            Label("Stop Focusing", systemImage: "stop.circle.fill")
-                        }
-                        .buttonStyle(.borderedProminent)
-                        .tint(.red)
-
+            VStack(spacing: 24) {
+                headerView
+                
+                if let manager = sessionManager {
+                    if manager.activeSession != nil {
+                        activeSessionView(manager: manager)
                     } else {
-
-                        LazyVGrid(
-                            columns: [
-                                GridItem(.flexible()),
-                                GridItem(.flexible())
-                            ],
-                            spacing: 16
-                        ) {
-                            ForEach(FocusMode.allCases, id: \.self) { mode in
-                                Button {
-                                    startSession(mode: mode)
-                                } label: {
-                                    FocusModeCardView(mode: mode)
-                                }
-                                .buttonStyle(.plain)
-                            }
-                        }
-                        .padding()
+                        modeGridView(manager: manager)
                     }
                 }
-Spacer()
-        
+                
+                Spacer()
             }
+            .padding()
             .navigationBarHidden(true)
-        
+        }
+        .onAppear {
+            if sessionManager == nil {
+                sessionManager = SessionManager(modelContext: modelContext)
+            }
         }
     }
-    func startSession(mode: FocusMode){
-        activeSession = FocusSession(mode: mode, startTime: Date())
+    
+    // MARK: - Subviews
+    
+    var headerView: some View {
+        HStack {
+            Text("Focus Sessions")
+                .font(.largeTitle)
+                .fontWeight(.bold)
+            
+            Spacer()
+            
+            NavigationLink(destination: ProfileView()) {
+                Image(systemName: "person.circle")
+                    .font(.title2)
+            }
+        }
     }
-    func stopSession(){
-        activeSession = nil
+    
+
+    
+    func modeGridView(manager: SessionManager) -> some View {
+        LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 16) {
+            ForEach(FocusMode.allCases) { mode in
+                Button(action: { manager.startSession(mode: mode) }) {
+                    FocusModeCardView(mode: mode)
+                }
+                .buttonStyle(.plain)
+            }
+        }
     }
 }
 

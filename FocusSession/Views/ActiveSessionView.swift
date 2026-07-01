@@ -66,3 +66,44 @@ struct ActiveSessionView: View {
     }
     
 
+func activeSessionView(manager: SessionManager) -> some View {
+    // Extract sub-expressions to help the type-checker
+    let modeSymbol: String = manager.activeSession?.mode.symbol ?? "questionmark.circle"
+    let modeColor: Color = manager.activeSession?.mode.color ?? .blue
+
+    return VStack(spacing: 20) {
+        VStack(spacing: 12) {
+            HStack {
+                Image(systemName: modeSymbol)
+                Text("Currently Focusing")
+                Spacer()
+            }
+            .foregroundStyle(modeColor)
+            .font(.subheadline)
+
+            Text(manager.formattedTime)
+                .font(.system(size: 64, weight: .thin, design: .monospaced))
+
+            Text("\(manager.pointsEarned) points earned")
+                .font(.title3)
+                .foregroundStyle(.secondary)
+        }
+        .padding()
+        // Break up background shape composition into distinct modifiers
+        .background(
+            RoundedRectangle(cornerRadius: 20)
+                .fill(modeColor.opacity(0.1))
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 20)
+                .stroke(modeColor.opacity(0.3), lineWidth: 2)
+        )
+
+        Button(action: { manager.stopSession() }) {
+            Label("Stop Focusing", systemImage: "stop.circle.fill")
+                .font(.title2)
+        }
+        .buttonStyle(.borderedProminent)
+        .tint(.red)
+    }
+}

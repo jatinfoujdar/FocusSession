@@ -1,5 +1,5 @@
 //
-//  FocusSessionModal.swift
+//  FocusSessionModel.swift
 //  FocusSession
 //
 //  Created by jatin foujdar on 27/06/26.
@@ -10,7 +10,7 @@ import SwiftData
 
 
 @Model
-class FocusSessionModal {
+class FocusSessionModel {
     var id: UUID
        var modeRawValue: String
        var startTime: Date

@@ -23,21 +23,19 @@ struct StatRow: View {
 }
 
 struct SessionRow: View {
-    let mode: FocusMode
-    let duration: String
-    let points: Int
-    let startTime: Date
+    let record: SessionRecord
+    
     
     var body: some View {
         HStack {
-            Image(systemName: mode.symbol)
-                .foregroundStyle(mode.color)
+            Image(systemName: record.mode.symbol)
+                .foregroundStyle(record.mode.color)
                 .frame(width: 32)
             
             VStack(alignment: .leading) {
-                Text(mode.rawValue)
+                Text(record.mode.rawValue)
                     .font(.headline)
-                Text(startTime, style: .date)
+                Text(record.startTime, style: .date)
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
@@ -45,8 +43,8 @@ struct SessionRow: View {
             Spacer()
             
             VStack(alignment: .trailing) {
-                Text(duration)
-                Text("\(points) pts")
+                Text(record.formattedDuration)
+                Text("\(record.pointsEarned) pts")
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }

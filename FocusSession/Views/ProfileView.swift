@@ -6,9 +6,27 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct ProfileView: View {
-    @State private var username = "Jatin"
+    @Query(sort: \SessionRecord.startTime, order: .reverse) private var records: [SessionRecord]
+    @Query private var profiles : [UserProfile]
+    @Environment(\.modelContext) private var modelContext
+    
+    @State private var username = "Username"
+    
+    var profile: UserProfile? {
+        profiles.first
+    }
+    
+    var totalPoints: Int{
+        records.reduce(0){$0 + $1.pointsEarned}
+    }
+    
+    var totalBadges: Int{
+        records.compactMap {$0.badges}.flatMap {$0}.count
+    }
+    
     var body: some View {
         NavigationStack{
             List{
@@ -24,36 +42,74 @@ struct ProfileView: View {
                                 .textFieldStyle(.roundedBorder)
                                 .font(.title2)
                                 .multilineTextAlignment(.center)
+                                .onSubmit {
+                                    //                                    saveUserName()
+                                }
                         }
                         Spacer()
-                        
                     }
                     .padding(.vertical)
                 }
                 
                 Section("Statistics"){
-                    StatRow(title: "Total Points", value: "42")
-                    StatRow(title: "Total Badges", value: "15")
-                    StatRow(title: "Sessions Completed", value: "8")
+                    StatRow(title: "Total Points", value: "\(totalPoints)")
+                    StatRow(title: "Total Badges", value: "\(totalBadges)")
+                    StatRow(title: "Sessions Completed", value: "\(records.count)")
+                }
+                
+                
+                if totalBadges > 0 {
+                    Section("Badges"){
+                        BadgeGridView(badges: records.compactMap { $0.badges }.flatMap { $0 })
+                    }
                 }
                 
                 Section("Recent Sessions") {
-                    SessionRow(
-                        mode: .work,
-                        duration: "45:00",
-                        points: 22,
-                        startTime: Date()
-                    )
-                    
-                    SessionRow(
-                        mode: .play,
-                        duration: "30:00",
-                        points: 15,
-                        startTime: Date().addingTimeInterval(-3600)
-                    )
+                    ForEach(records) { record in
+                        SessionRow(record: record)
+                    }
                 }
             }
             .navigationTitle("Profile")
+        }
+    }
+}
+
+struct BadgeGridView: View {
+    let badges: [BadgeModel]
+    
+    let columns = [
+        GridItem(.adaptive(minimum: 60, maximum: 80))
+    ]
+    
+    var body: some View {
+        LazyVGrid(columns: columns, spacing: 16) {
+            ForEach(badges) { badge in
+                VStack(spacing: 8) {
+                    ZStack {
+                        Circle()
+                            .fill(categoryColor(badge.category).opacity(0.15))
+                            .frame(width: 50, height: 50)
+                        
+                        Image(systemName: badge.symbol)
+                            .font(.title2)
+                            .foregroundStyle(categoryColor(badge.category))
+                    }
+                    
+                    Text("\(badge.pointNumber) pt")
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                }
+            }
+        }
+        .padding(.vertical, 8)
+    }
+    
+    private func categoryColor(_ category: BadgeCategory) -> Color {
+        switch category {
+        case .trees: return .green
+        case .leaves: return .mint
+        case .animals: return .orange
         }
     }
 }
